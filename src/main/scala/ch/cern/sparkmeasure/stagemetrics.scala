@@ -135,6 +135,14 @@ case class StageMetrics(sparkSession: SparkSession) {
     endSnapshot
   }
 
+  def saveToFile(fileName: String, fileFormat: String = "json") = {
+    if (fileFormat.equalsIgnoreCase("json")) {
+      Utils.writeSerializedJSON(fileName, listenerStage.stageMetricsData)
+    } else {
+      Utils.writeSerialized(fileName, listenerStage.stageMetricsData)
+    }
+  }
+
   /** Move data recorded from the custom listener into a DataFrame and register it as a view for easier processing */
   def createStageMetricsDF(nameTempView: String = "PerfStageMetrics"): DataFrame = {
     import sparkSession.implicits._

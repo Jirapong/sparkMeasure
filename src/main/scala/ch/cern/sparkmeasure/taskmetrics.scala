@@ -159,6 +159,14 @@ case class TaskMetrics(sparkSession: SparkSession, gatherAccumulables: Boolean =
     endSnapshot
   }
 
+  def saveToFile(fileName: String, fileFormat: String = "json") = {
+    if (fileFormat.equalsIgnoreCase("json")) {
+      Utils.writeSerializedJSON(fileName, listenerTask.taskMetricsData)
+    } else {
+      Utils.writeSerialized(fileName, listenerTask.taskMetricsData)
+    }
+  }
+
   def createAccumulablesDF(nameTempView: String = "AccumulablesTaskMetrics"): DataFrame = {
     import sparkSession.implicits._
     val resultDF = listenerTask.accumulablesMetricsData.toDF
